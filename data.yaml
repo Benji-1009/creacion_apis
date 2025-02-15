@@ -1,0 +1,355 @@
+openapi: 3.1.0
+info:
+  title: APIFiddle Sample Definition
+  description: Example workspace
+  version: 0.0.0
+paths:
+  /patient:
+    get:
+      operationId: listadoDePacientes
+      summary: Listado de pacientes
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                required:
+                  - data
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Authentication is required to access the requested resource. The
+            client must include the appropriate credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+    post:
+      summary: Create patient
+      operationId: createPatient
+      description: Creates a new record of type Patient.
+      tags: []
+      security: []
+      responses:
+        "201":
+          description: The request was successful, and a new resource was created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - data
+                  properties:
+                    data:
+                      $ref: "#/components/schemas/PatientCreate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerErrror"
+      requestBody:
+        required: true
+        description: |-
+          {
+          	"name": "benjamin",
+          	"email": "benjamin@mail.com",
+          	"BloodType": "o",
+          	"file": "http://www.goolge.com.mx"
+          }
+        content:
+          application/json:
+            schema:
+              type: object
+  /patient/{patientId}:
+    patch:
+      summary: Patch patient
+      operationId: partialUpdatePatient
+      description: Partially updates a record of type Patient.
+      tags: []
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/patientId"
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PatientPartialUpdate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerErrror"
+      requestBody:
+        required: true
+        description: |-
+          {
+          	"BloodType": "o"
+          }
+        content:
+          application/json:
+            schema:
+              type: object
+    put:
+      summary: Update patient
+      operationId: updatePatient
+      description: Updates a record of type Patient.
+      tags: []
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/patientId"
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PatientUpdate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerErrror"
+      requestBody:
+        required: true
+        description: |-
+          {
+          	"BloodType": "o"
+          }
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      summary: Delete patient
+      operationId: removePatient
+      description: Deletes a record of type Patient.
+      tags: []
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/patientId"
+      responses:
+        "204":
+          description: The request was successful, but there is no content to return in
+            the response.
+          content:
+            application/json:
+              schema:
+                type: "null"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerErrror"
+    get:
+      summary: Get patient
+      operationId: getPatient
+      description: Returns a record of type Patient.
+      tags: []
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/patientId"
+      responses:
+        "200":
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Patient"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerErrror"
+components:
+  responses:
+    BadRequest:
+      description: The server could not understand the request due to invalid syntax.
+        The client should modify the request and try again.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                  required:
+                    - message
+            required:
+              - message
+    Conflict:
+      description: The request could not be completed due to a conflict with the
+        current state of the resource. Resolve the conflict and try again.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    InternalServerErrror:
+      description: The server encountered an unexpected condition that prevented it
+        from fulfilling the request. Report the issue to the support team if it
+        persists.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    NotFound:
+      description: The server cannot find the requested resource. The endpoint may be
+        invalid or the resource may no longer exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+  schemas:
+    Patient:
+      type: object
+      properties:
+        bloodType:
+          type: string
+          description: Tipo de Sangre, limitado a A, B, AB y O.
+          examples:
+            - o
+            - a
+            - b
+            - ab
+          enum:
+            - o
+            - a
+            - b
+            - ab
+        email:
+          type: string
+        file:
+          type: string
+        name:
+          type: string
+      required:
+        - bloodType
+        - email
+        - file
+        - name
+      description: Listado de pacientes
+    PatientUpdate:
+      type: object
+      properties:
+        bloodType:
+          type: string
+        email:
+          type: string
+        file:
+          type: string
+        name:
+          type: string
+      required:
+        - bloodType
+        - email
+        - file
+        - name
+      description: Data transfer object for updating all fields of an existing Patient
+        (PUT operation).
+      x-fiddle-dto-info:
+        baseSchemaName: Patient
+    PatientPartialUpdate:
+      type: object
+      properties:
+        bloodType:
+          type: string
+        email:
+          type: string
+        file:
+          type: string
+        name:
+          type: string
+      required:
+        - bloodType
+        - email
+        - file
+        - name
+      description: Data transfer object for partially updating an existing Patient
+        (PATCH operation).
+      x-fiddle-dto-info:
+        baseSchemaName: Patient
+    PatientCreate:
+      type: object
+      properties:
+        bloodType:
+          type: string
+        email:
+          type: string
+        file:
+          type: string
+        name:
+          type: string
+      required:
+        - bloodType
+        - email
+        - file
+        - name
+      description: Data transfer object for creating a new Patient.
+      x-fiddle-dto-info:
+        baseSchemaName: Patient
+  parameters:
+    patientId:
+      name: patientId
+      in: path
+      required: true
+      schema:
+        type: string
